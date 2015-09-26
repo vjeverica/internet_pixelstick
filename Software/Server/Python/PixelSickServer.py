@@ -5,9 +5,9 @@
 # importing os used for file manipulation
 import os, glob, time, operator
 import socket
-# importing PIL
+# importing PIL (library for importing picture)
 from PIL import Image
-
+#The User Datagram Protocol(udp)
 UDP_IP = "178.62.187.251" # server IP 
 UDP_PORT = 2390 # server port
 sock = socket.socket(socket.AF_INET, # Internet
@@ -17,7 +17,7 @@ sock.bind((UDP_IP, UDP_PORT))
 # creating name for output bmp file
 file_out = "picture.bmp"
 
-# save pixel data to text file(webpage)
+# send data to text file(webpage)
 def sendToText(text):
     text_file = open("/var/www/pixelstick.html", "w")
     text_file.write(str(text))
@@ -48,12 +48,13 @@ def get_first_image(files, _invert=False):
 def get_last_image(files):
     return get_first_image(files, _invert=True)
 
-# creating function we will send picture file name to this function and this function will convert image
+# creating function we will send picture file name to this function and thisfunction will convert image
 def convert_save_image( image ):
     img = Image.open(image)
     # setting variable newwidth that holds new width value 
     newwidth = 50
     # setting variable that holds new angle value
+    # ako je slika vodoravna nije ju potrebno rotirati
     angle = -90
     # rotate image
     img = img.rotate(angle)
@@ -61,7 +62,7 @@ def convert_save_image( image ):
     wpercent = (newwidth/float(img.size[0]))
     # setting new hight with maintaing aspect ratio
     hsize = int((float(img.size[1])*float(wpercent)))
-    # resizing imaga
+    # resizing image
     img = img.resize((newwidth,hsize), Image.ANTIALIAS)
     # split image to rgb value needed for saving into bmp
     r, g, b = img.split()
@@ -88,7 +89,7 @@ while True:
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
     print data
     if data.find("Start") == 0: # If S is recieved start check for picture in folder
-    	files = glob.glob('*.png')
+    	files = glob.glob('*.jpg')# dodati više formata (gif,png,jpg)
 	f = get_first_image(files)
         print (f)        
         if f is None:
